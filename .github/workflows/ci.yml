@@ -49,7 +49,5 @@ jobs:
       - name: Pip Install
         run: pip install .
 
-
-      # Tests
-      - name: Pytest
-        run: pytest --cov kartothek --cov-report xml
+      - name: Run model
+        run: python simulate.py
