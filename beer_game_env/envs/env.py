@@ -252,8 +252,8 @@ class BeerGame(gym.Env):
         print('Orders:   ', [list(x) for x in self.orders])
         print('Shipments:', [list(x) for x in self.shipments])
         print('Last incoming orders:  ', self.next_incoming_orders)
-        print('Cum holding cost:  ', self.cum_stockout_cost)
-        print('Cum stockout cost: ', self.cum_holding_cost)
+        print('Cum holding cost:  ', self.cum_holding_cost)
+        print('Cum stockout cost: ', self.cum_stockout_cost)
         print('Last holding cost: ', self.holding_cost)
         print('Last stockout cost:', self.stockout_cost)
 

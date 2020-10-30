@@ -1,11 +1,21 @@
 import gym
-import beer_game_env
+from beer_game_env.envs import BeerGame
+import numpy as np
 
+if __name__ == '__main__':
+    env = BeerGame(n_agents=4, env_type='classical')
+    start_state = env.reset()
+    for i, obs in enumerate(start_state):
+        print(f'Agent {i} observation: {obs}')
+    env.render()
+    done = False
+    while not done:
+        actions = np.random.uniform(0, 16, size=4)
+        actions = actions.astype(int)
+        step_state, step_rewards, done, _ = env.step(actions)
+        #print(step_state, step_rewards, done)
+        env.render()
 
-
-env = gym.make('BeerGame-v0', n_agents=4, env_type='classical')
-
-env.reset()
-for _ in range(1000):
-     env.render()
-     env.step([0,0,0,1])  # take a random action
+    # you can also save and load environment via
+    # canned_env = env._save()
+    # env._load(canned_env)
