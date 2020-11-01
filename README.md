@@ -11,7 +11,7 @@ source activate beer-game-env
 
 2. Clone the environment repository
 ```
-git clone https://github.com/orlov-ai/beer-game-env
+git clone https://github.com/lr4d/pydataglobal-bot-game-2020.git
 ```
 
 3. Point to root repository and install the package
@@ -27,7 +27,7 @@ import beer_game_env
 env = gym.make('BeerGame-v0', n_agents=4, env_type='classical')
 ```
 
-tested with gym version `gym==0.14.0`
+tested with gym version `gym==0.17.3`
 
 Need a feature? Have a problem? Just start an issue.
 PRs are always welcome.
