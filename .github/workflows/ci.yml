@@ -50,4 +50,4 @@ jobs:
         run: pip install .
 
       - name: Run model
-        run: python simulate.py
+        run: python bot.py
