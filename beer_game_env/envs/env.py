@@ -57,8 +57,7 @@ class BeerGame(gym.Env):
         self.stocks = []  # current inventory level for each agent
         self.holding_cost = None
         self.stockout_cost = None
-        self.cum_holding_cost = None
-        self.cum_stockout_cost = None
+        self.cumulative_cost = None
         self.end_customer_demand = None  # end customer's demand, i.e., the customers buying beer at the retailer
         self.score_weight = None  # a list of 2 lists, each of which has `n_agents` elements
         self.turn = None
@@ -102,7 +101,7 @@ class BeerGame(gym.Env):
             observations[i] = {
                 'current_stock': self.stocks[i],
                 'turn': self.turn,
-                'cum_cost': self.cum_holding_cost[i] + self.cum_stockout_cost[i],
+                'cum_cost': self.cumulative_cost[i],
                 'inbound_shipments': list(self.inbound_shipments[i]),
                 'orders': list(self.orders[i])[::-1],
                 'next_incoming_order': self.next_incoming_orders[i]
@@ -205,8 +204,7 @@ class BeerGame(gym.Env):
             raise NotImplementedError(f'Environment type {env_type} is not implemented yet.')
 
         # initialize other variables
-        self.cum_holding_cost = np.zeros(self.n_agents, dtype=np.float)
-        self.cum_stockout_cost = np.zeros(self.n_agents, dtype=np.float)
+        self.cumulative_cost = np.zeros(self.n_agents, dtype=np.float)
         self.orders = [deque(x) for x in temp_orders]
         self.inbound_shipments = [deque(x) for x in temp_inbound_shipments]
         self.turn = 0
@@ -214,7 +212,7 @@ class BeerGame(gym.Env):
         temp_obs = [None] * self.n_agents
         for i in range(self.n_agents):
             temp_obs[i] = {'current_stock': self.stocks[i], 'turn': self.turn,
-                           'cum_cost': self.cum_holding_cost[i] + self.cum_stockout_cost[i],
+                           'cum_cost': self.cumulative_cost[i],
                            'inbound_shipments': list(self.inbound_shipments[i]), 'orders': list(self.orders[i])[::-1],
                            'next_incoming_order': self.next_incoming_orders[i]}
         prev_state = temp_obs
@@ -230,10 +228,11 @@ class BeerGame(gym.Env):
         print('Orders Placed: ', [list(x) for x in self.orders])
         print('Shipments Inbound: ', [list(x) for x in self.inbound_shipments])
         print('Next Incoming Orders: ', self.next_incoming_orders)
-        print('Cumulative holding cost: ', self.cum_holding_cost)
-        print('Cumulative stockout cost: ', self.cum_stockout_cost)
+        print('Cumulative cost: ', self.cumulative_cost)
         print('Last holding cost: ', self.holding_cost)
         print('Last stockout cost: ', self.stockout_cost)
+        if self.turn == self.n_turns - 1:
+            print(f"\nTotal cost is: EUR {sum(self.cumulative_cost)}")
 
     def step(self, action: list):
         # sanity checks
@@ -277,14 +276,13 @@ class BeerGame(gym.Env):
                 self.holding_cost[i] = max(0, self.stocks[i]) * self.score_weight[0][i]  # only applicable when stocks > 0
             else:
                 self.stockout_cost[i] = -min(0, self.stocks[i]) * self.score_weight[1][i]  # only applicable when stocks < 0
-        self.cum_holding_cost += self.holding_cost
-        self.cum_stockout_cost += self.stockout_cost
+        self.cumulative_cost += self.holding_cost
+        self.cumulative_cost += self.stockout_cost
         # calculate reward
         rewards = self._get_rewards()
 
         # check if done
         if self.turn == self.n_turns - 1:
-            print(f"\nTotal cost is: EUR {sum(self.cum_holding_cost + self.cum_stockout_cost)}")
             self.done = True
         else:
             self.turn += 1
