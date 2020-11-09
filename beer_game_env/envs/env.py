@@ -45,31 +45,6 @@ def get_init_len(init):
     return init_len
 
 
-def transform_obs(x: dict):
-    """
-    transform dict of observations (one step) to an array
-    :param x: dict
-    :rtype: np.array
-    """
-    return np.array((x['next_incoming_order'], x['current_stock'], x['cum_cost'], *x['shipments'], *x['orders']))
-
-
-def state_dict_to_array(state_dict: dict):
-    """
-    transform dict of observations (current step and previous steps) to an array
-    :param state_dict:
-    :rtype: np.array
-    """
-    # todo in this state this function is not use, need to use it
-    current_obs = transform_obs(state_dict)
-    if 'prev' in state_dict:
-        prev_obs = np.hstack([transform_obs(x) for x in state_dict['prev']])
-        flatten = np.hstack((current_obs, prev_obs))
-    else:
-        flatten = current_obs
-    return flatten
-
-
 class BeerGame(gym.Env):
     metadata = {'render.modes': ['human']}
 
