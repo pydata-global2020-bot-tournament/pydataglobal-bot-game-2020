@@ -54,7 +54,3 @@ jobs:
 
       - name: Run test
         run: pytest test_bot.py
-
-      - name: Post Score to Leaderboard
-        run: |
-          echo $BOT_COST

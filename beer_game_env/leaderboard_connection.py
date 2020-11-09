@@ -11,11 +11,10 @@ def post_score_to_api(score: float):
 
     # payload data
     data = {"user": "Player1", "score": score}
-    git_user = subprocess.check_output(["git", "log -1", "--pretty=format:'%an'"])
+    git_user = subprocess.check_output(["git", "log", "-1", "--pretty=format:'%an'"])
 
     # git_user = os.system("git log -1 --pretty=format:'%an'")
-    print(f"got user: {git_user}")
-    print(f"got score: {score}")
+    print(f"Sending data to leaderboard: User: {git_user}, score: {score}")
     r = requests.post(
         url=url,
         json=data,
