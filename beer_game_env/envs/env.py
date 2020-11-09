@@ -1,3 +1,5 @@
+import os
+
 import cloudpickle
 import gym
 from gym import error, spaces
@@ -284,7 +286,9 @@ class BeerGame(gym.Env):
 
         # check if done
         if self.turn == self.n_turns - 1:
-            print(f"\nTotal cost is: EUR {sum(self.cum_holding_cost + self.cum_stockout_cost)}")
+            cost = sum(self.cum_holding_cost + self.cum_stockout_cost)
+            print(f"\nTotal cost is: EUR {cost}")
+            os.environ['BOT_COST'] = str(cost)
             self.done = True
         else:
             self.turn += 1
