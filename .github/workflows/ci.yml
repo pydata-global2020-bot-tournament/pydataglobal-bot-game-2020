@@ -54,6 +54,10 @@ jobs:
 
       - name: Run model
         run: python bot.py
-        env:
-          LEADERBOARD_API_USERNAME: ${{ secrets.LEADERBOARD_API_USERNAME }}
-          LEADERBOARD_API_PASSWORD: ${{ secrets.LEADERBOARD_API_PASSWORD }}
+
+      - name: Run test
+        run: pytest test_bot.py
+
+      - name: Post Score to Leaderboard
+        run: |
+          echo $BOT_COST
