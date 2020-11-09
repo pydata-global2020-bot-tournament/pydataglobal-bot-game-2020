@@ -52,14 +52,17 @@ jobs:
       - name: Run test
         run: pytest test_bot.py
 
-      - name: Run Bot and Post Score to Leaderboard
+      - name: Run Bot
         run: |
           score=$(python bot.py && grep 'Total cost is: EUR' && grep -Eo '[0-9]{1,4}.[0-9]{1,4}')
           echo $score
-          # curl -i --header 'Content-Type: application/json' \
-          #      --request POST --data '{\"user\":\"dummy-player\",\"score\":$score}' \
-          #      -u $LEADERBOARD_API_USERNAME:$LEADERBOARD_API_PASSWORD \
-          #      $LEADERBOARD_API_ENDPOINT
+          export score=$score
+      - name: Run Bot and Post Score to Leaderboard
+        run: |
+          curl -i --header 'Content-Type: application/json' \
+               --request POST --data '{\"user\":\"dummy-player\",\"score\":$score}' \
+               -u $LEADERBOARD_API_USERNAME:$LEADERBOARD_API_PASSWORD \
+               $LEADERBOARD_API_ENDPOINT
         env:
           LEADERBOARD_API_USERNAME: pydata-leaderboatd-api-user
           LEADERBOARD_API_PASSWORD: svjYxP6P3Tpnp4meK32N4ZwN22H8ddD5xg4hXrhf
