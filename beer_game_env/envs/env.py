@@ -5,7 +5,7 @@ from gym.utils import seeding
 import itertools
 from collections import deque
 import numpy as np
-from .leaderboard_connection import post_score_to_api
+from beer_game_env.leaderboard_connection import post_score_to_api
 
 
 def add_noise_to_init(init, noise):
