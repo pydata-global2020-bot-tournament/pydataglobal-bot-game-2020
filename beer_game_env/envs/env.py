@@ -48,7 +48,7 @@ def get_init_len(init):
 class BeerGame(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, n_agents: int, env_type: str, n_turns_per_game=20,
+    def __init__(self, env_type: str, n_turns_per_game=20,
                  add_noise_initialization=False, seed=None):
         super().__init__()
         self.orders = []  # this is the decision each agent makes - how much do I need and should order?
@@ -67,9 +67,7 @@ class BeerGame(gym.Env):
         self.prev_states = None
         self.np_random = None
 
-        assert isinstance(n_agents, int)
-        assert n_agents > 1
-        self.n_agents = n_agents
+        self.n_agents = 4 #keeping 4 as default corresponding to brewery, distributor, wholesaler, retailer
         self.env_type = env_type
         if self.env_type not in ['classical', 'uniform_0_2', 'normal_10_4']:
             raise NotImplementedError("env_type must be in ['classical', 'uniform_0_2', 'normal_10_4']")
