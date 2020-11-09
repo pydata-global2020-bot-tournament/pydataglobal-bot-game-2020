@@ -51,3 +51,6 @@ jobs:
 
       - name: Run model
         run: python bot.py
+
+      - name: Run test
+        run: pytest test_bot.py  
