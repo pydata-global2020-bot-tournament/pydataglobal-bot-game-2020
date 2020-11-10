@@ -1,11 +1,9 @@
 import os
 import subprocess
+from pathlib import Path
 
 import requests
 from requests.auth import HTTPBasicAuth
-from pathlib import Path
-
-from requests.exceptions import HTTPError
 
 
 def post_score_to_api(score: float):

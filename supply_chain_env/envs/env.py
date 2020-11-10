@@ -1,10 +1,11 @@
-import cloudpickle
-import gym
-from gym import error, spaces
-from gym.utils import seeding
 import itertools
 from collections import deque
+
+import cloudpickle
+import gym
 import numpy as np
+from gym import error
+from gym.utils import seeding
 
 
 def add_noise_to_init(init, noise):
