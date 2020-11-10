@@ -3,6 +3,7 @@ import subprocess
 
 import requests
 from requests.auth import HTTPBasicAuth
+from pathlib import Path
 
 
 def post_score_to_api(score: float):
@@ -18,12 +19,15 @@ def post_score_to_api(score: float):
     password = os.environ["LEADERBOARD_API_PASSWORD"]
     url = "https://leaderboard-server.pydata-bot-tournament.eu.live.external.byp.ai/add-user-score"
 
+    ca_file = str(Path(__file__).parent.absolute() / "resources" / "CA.crt")
+
     r = requests.post(
         url=url,
         json=data,
         headers={"content-type": "application/json"},
         auth=HTTPBasicAuth(username, password),
+        verify=ca_file,
     )
 
     assert r.ok
-    print(f"post was successful")
+    print("post was successful")
