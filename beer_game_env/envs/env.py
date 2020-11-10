@@ -5,7 +5,6 @@ from gym.utils import seeding
 import itertools
 from collections import deque
 import numpy as np
-from beer_game_env.leaderboard_connection import post_score_to_api
 
 
 def add_noise_to_init(init, noise):
@@ -285,9 +284,7 @@ class BeerGame(gym.Env):
 
         # check if done
         if self.turn == self.n_turns - 1:
-            cost = sum(self.cum_holding_cost + self.cum_stockout_cost)
-            print(f"\nTotal cost is: EUR {cost}")
-            post_score_to_api(score=cost)
+            print(f"\nTotal cost is: EUR {sum(self.cum_holding_cost + self.cum_stockout_cost)}")
             self.done = True
         else:
             self.turn += 1
