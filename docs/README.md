@@ -2,7 +2,7 @@ Here is an example screen from https://beergame.opexanalytics.com/
 
 # TODO: @vasu: add content here to explain the variables in observation + remove the pic
 I will use it to explain state variables in the environment, so you can better understand position of agents and 
-order inside state variables. `env` is an instance of class `BeerGame`.
+order inside state variables. `env` is an instance of class `SupplyChainTournament`.
 
 ```
 env.orders = [[11, 10], [15, 16], [11, 14], [8]]

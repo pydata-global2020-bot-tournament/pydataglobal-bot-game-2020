@@ -24,7 +24,7 @@ To use:
 ```
 import gym
 import supply_chain_env
-env = gym.make('BeerGame-v0', n_agents=4, env_type='classical')
+env = gym.make('SupplyChainTournament-v0', n_agents=4, env_type='classical')
 ```
 
 tested with gym version `gym==0.17.3`
