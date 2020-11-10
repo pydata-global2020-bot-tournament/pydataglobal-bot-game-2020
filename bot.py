@@ -6,6 +6,7 @@ from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
 
+
 class AgentType(Enum):
     Retailer = auto()
     Wholesaler = auto()
