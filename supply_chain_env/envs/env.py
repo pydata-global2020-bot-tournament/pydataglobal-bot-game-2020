@@ -69,7 +69,7 @@ class SupplyChainBotTournament(gym.Env):
         self.stockout_cost = None
         self.cum_holding_cost = None
         self.cum_stockout_cost = None
-        self.end_customer_demand = None  # end customer's demand, i.e., the customers buying beer at the retailer
+        self.end_customer_demand = None  # end customer's demand, i.e., the customers buying goods at the retailer
         self.score_weight = (
             None  # a list of 2 lists, each of which has `n_agents` elements
         )
