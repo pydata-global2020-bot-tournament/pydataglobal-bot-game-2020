@@ -1,8 +1,9 @@
-from supply_chain_env.leaderboard import post_score_to_api
-from supply_chain_env.envs.env import SupplyChainBotTournament
-import gym
-import numpy as np
 from enum import Enum, auto
+
+import numpy as np
+
+from supply_chain_env.envs.env import SupplyChainBotTournament
+from supply_chain_env.leaderboard import post_score_to_api
 
 
 class AgentType(Enum):

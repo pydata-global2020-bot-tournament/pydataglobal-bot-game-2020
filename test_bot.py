@@ -1,6 +1,5 @@
+from bot import Agent, AgentType
 from supply_chain_env.envs.env import SupplyChainBotTournament
-from bot import AgentType, Agent
-import numpy as np
 
 
 class TestAgent(Agent):
