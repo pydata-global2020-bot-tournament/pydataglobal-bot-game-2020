@@ -49,8 +49,9 @@ jobs:
       - name: Pip Install
         run: pip install .
 
+      - name: Run test
+        run: pytest test_bot.py
+
       - name: Run model
         run: python bot.py
 
-      - name: Run test
-        run: pytest test_bot.py
