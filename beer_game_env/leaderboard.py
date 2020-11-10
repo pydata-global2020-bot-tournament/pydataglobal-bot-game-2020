@@ -10,10 +10,12 @@ from requests.exceptions import HTTPError
 
 def post_score_to_api(score: float):
     # payload data
-    data = {"user": "Player1", "score": score}
+    data = {"user": "Anonymous", "score": score}
     git_user = subprocess.check_output(
         ["git", "log", "-1", "--pretty=format:%an"]
     ).decode()
+    if git_user:
+        data["user"] = git_user
     print(f"Sending data to leaderboard: User: {git_user}, score: {score}")
 
     # authentication
