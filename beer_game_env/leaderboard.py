@@ -5,6 +5,8 @@ import requests
 from requests.auth import HTTPBasicAuth
 from pathlib import Path
 
+from requests.exceptions import HTTPError
+
 
 def post_score_to_api(score: float):
     # payload data
@@ -29,5 +31,8 @@ def post_score_to_api(score: float):
         verify=ca_file,
     )
 
-    assert r.ok
+    if not r.ok:
+        raise Exception(
+            f"Updating score was not successful and failed with {r.status_code}"
+        )
     print("post was successful")
