@@ -1,3 +1,8 @@
+"""A helper tool to debug agents behavior.
+
+The tool renders agents states and actions using pyglet UI.
+"""
+import argparse
 import json
 from collections import OrderedDict
 from typing import Optional, Tuple, List, Dict
@@ -5,6 +10,8 @@ from typing import Optional, Tuple, List, Dict
 import numpy as np
 import pyglet
 from dataclasses import dataclass
+
+from bot import AgentType
 
 
 class Drawable:
@@ -322,10 +329,10 @@ class Layout(Drawable):
             ('wholesaler_shipments_label', wholesaler_to_distribution_shipments_label),
             ('wholesaler_shipments_value', wholesaler_to_distribution_shipments_value),
 
-            ('distribution_orders_label', distribution_to_manufacturer_orders_label),
-            ('distribution_orders_value', distribution_to_manufacturer_orders_value),
-            ('distribution_shipments_label', distribution_to_manufacturer_shipments_label),
-            ('distribution_shipments_value', distribution_to_manufacturer_shipments_value),
+            ('distributor_orders_label', distribution_to_manufacturer_orders_label),
+            ('distributor_orders_value', distribution_to_manufacturer_orders_value),
+            ('distributor_shipments_label', distribution_to_manufacturer_shipments_label),
+            ('distributor_shipments_value', distribution_to_manufacturer_shipments_value),
 
             ('manufacturer_orders_label', manufacturer_to_dummy_orders_label),
             ('manufacturer_orders_value', manufacturer_to_dummy_orders_value),
@@ -398,16 +405,24 @@ class SupplyChainWindow(pyglet.window.Window):  # noqa
         self.layout.update_state(env_state)
 
 
-def main():
-    agents = [Agent(name) for name in ('retailer', 'wholesaler', 'distribution', 'manufacturer')]
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input_file',
+                        default='/tmp/history.json',
+                        help='Environment history')
+    return parser.parse_args()
+
+
+def main(args: argparse.Namespace):
+    agents = [Agent(agent_type.name.lower()) for agent_type in AgentType]
     _, _, distribution, _ = agents
     distribution.top_label = True
-    with open('/tmp/history.json') as fp:
+    with open(args.input_file) as fp:
         history = json.load(fp)
     window = SupplyChainWindow(agents, history)
     pyglet.app.run()
 
 
 if __name__ == '__main__':
-    main()
+    main(parse_args())
 
