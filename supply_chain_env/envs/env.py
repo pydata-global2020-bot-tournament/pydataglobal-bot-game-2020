@@ -52,8 +52,6 @@ class SupplyChainBotTournament(gym.Env):
     def __init__(
         self,
         env_type: str,
-        n_turns_per_game=20,
-        add_noise_initialization=False,
         seed=None,
     ):
         super().__init__()
@@ -88,8 +86,8 @@ class SupplyChainBotTournament(gym.Env):
                 "env_type must be in ['classical', 'uniform_0_2', 'normal_10_4']"
             )
 
-        self.n_turns = n_turns_per_game
-        self.add_noise_initialization = add_noise_initialization
+        self.n_turns = 20
+        self.add_noise_initialization = True
         self.seed(seed)
 
         # TODO calculate state shape
