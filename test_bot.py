@@ -1,6 +1,4 @@
 from bot import Retailer, Wholesaler, Distributor, Manufacturer, create_agents, run_game
-from supply_chain_env.envs.env import SupplyChainBotTournament
-
 
 N_AGENTS = 4
 N_TURNS = 20
