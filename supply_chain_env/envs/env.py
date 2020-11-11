@@ -1,4 +1,5 @@
 import itertools
+import json
 from collections import deque
 
 import cloudpickle
@@ -89,6 +90,8 @@ class SupplyChainBotTournament(gym.Env):
         self.n_turns = 20
         self.add_noise_initialization = True
         self.seed(seed)
+
+        self.history = []
 
         # TODO calculate state shape
         # self.action_space = spaces.Discrete(N_DISCRETE_ACTIONS)
@@ -303,6 +306,7 @@ class SupplyChainBotTournament(gym.Env):
             }
         prev_state = temp_obs
         self.prev_states = deque([prev_state] * (self.n_states_concatenated - 1))
+        self.history.append(self.get_json_state())
         return self._get_observations()
 
     def render(self, mode="human"):
@@ -399,4 +403,30 @@ class SupplyChainBotTournament(gym.Env):
             self.turn += 1
         state = self._get_observations()
         # todo flatten observation dict
+        self.history.append(self.get_json_state())
         return state, rewards, self.done, {}
+
+    def get_json_state(self):
+        return dict(
+            turn=self.turn + 1,
+            stock_level=[int(x) for x in self.stocks],
+            orders_placed=[[int(v) for v in values] for values in self.orders],
+            inbound_shipments=[[int(v) for v in values] for values in self.inbound_shipments],
+            next_incoming_orders=[int(x) for x in self.next_incoming_orders],
+            cumulative_holding_cost=self.cum_holding_cost.tolist(),
+            cumulative_stockout_cost=self.cum_stockout_cost.tolist(),
+            holding_cost=(
+                self.holding_cost.tolist()
+                if self.holding_cost is not None
+                else [None] * self.n_agents
+            ),
+            stockout_cost=(
+                self.stockout_cost.tolist()
+                if self.stockout_cost is not None
+                else [None] * self.n_agents
+            )
+        )
+
+    def save_history(self, filename: str):
+        with open(filename, 'w') as fp:
+            json.dump(self.history, fp)
