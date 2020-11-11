@@ -19,7 +19,7 @@ items from agents next in the chain.
 A manufacturer is the last agent in the chain. It "orders" items from an infinite supply and ships them down the chain.
 
 The problem is that the agents don't know the current numbers of the stock level of their partners. Also, the
-order/shipment exchange doesn't happen instantaneously but involves two turns of delay. (Except manufacturer that
+order/shipment exchange doesn't happen instantaneously but involves two turns of lead time. (Except manufacturer that
 refills its supply with a delay of one turn). Therefore, non-optimal orderings could lead to stock-outs or too many
 items hold. Both conditions lead to costs.
 
@@ -98,4 +98,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
