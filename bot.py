@@ -41,43 +41,58 @@ from supply_chain_env.leaderboard import post_score_to_api
 class Retailer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)
+        return np.random.randint(0, 4)  # provide your implementation here
 
 
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)
+        return np.random.randint(0, 4)  # provide your implementation here
 
 
 class Distributor:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)
+        return np.random.randint(0, 4)  # provide your implementation here
 
 
 class Manufacturer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)
+        return np.random.randint(0, 4)  # provide your implementation here
+
+
+# --------------------
+# Game setup and utils
+# --------------------
+
+
+def create_agents():
+    """Creates a list of agents acting in the environment.
+
+    Note that the order of agents is important here. It is always considered by the environment that the first
+    agent is Retailer, the second one is Wholesaler, etc.
+    """
+    return [Retailer(), Wholesaler(), Distributor(), Manufacturer()]
+
+
+def run_game(agents: list, environment: str = 'classical', verbose: bool = False):
+    env = SupplyChainBotTournament(
+        env_type=environment
+    )  # TODO: decide if we should support all 3 environments or support one
+    state = env.reset()
+    while not env.done:
+        if verbose:
+            env.render()
+        actions = [a.get_action(state[i]) for i, a in enumerate(agents)]
+        state, rewards, done, _ = env.step(actions)
+    return state
 
 
 def main():
-    env = SupplyChainBotTournament(
-        env_type="classical"
-    )  # TODO: decide if we should support all 3 environments or support one
-
-    agents = [Retailer(), Wholesaler(), Distributor(), Manufacturer()]
-    step_state = env.reset()
-    while not env.done:
-        env.render()
-        actions = [a.get_action(step_state[i]) for i, a in enumerate(agents)]
-        step_state, step_rewards, done, _ = env.step(actions)
-
+    last_state = run_game(create_agents())
     # get total costs and post results to leaderboard api
-    total_costs = 0
-    for step in step_state:
-        total_costs += step["cum_cost"]
+    total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
     post_score_to_api(score=total_costs)
 
 
