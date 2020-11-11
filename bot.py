@@ -19,9 +19,11 @@ items from agents next in the chain.
 A manufacturer is the last agent in the chain. It "orders" items from an infinite supply and ships them down the chain.
 
 The problem is that the agents don't know the current numbers of the stock level of their partners. Also, the
-order/shipment exchange doesn't happen instantaneously but involves two turns of lead time. (Except manufacturer that
-refills its supply with a delay of one turn). Therefore, non-optimal orderings could lead to stock-outs or too many
-items hold. Both conditions lead to costs.
+order/shipment exchange doesn't happen instantaneously but involves two turns of lead time. (Except Manufacturer that
+refills its supply with lead time of one turn). The same lead time is true for delivery of a previously ordered amount.
+For example, if the Retailer orders X amount on n-th turn, this information reaches the Wholesaler in two "days", i.e.
+on the (n+2)-th turn. Therefore, non-optimal orderings could  result into stock-outs or too many items hold, and
+both conditions incur costs.
 
 Your goal is to implement a strategy for each of the four agents in such a way, that the costs are minimal after
 20 game turns. It means that you should try to escape both shortages AND holding too many items in stock. Your strategy
