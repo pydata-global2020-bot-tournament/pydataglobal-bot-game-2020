@@ -34,6 +34,9 @@ In this file, you'll find a dummy implementation for each agent that orders a ra
 run this script as-is, you'll see that the costs at the end of the game are very high. Try to come up with a better
 solution!
 """
+import sys
+from argparse import ArgumentParser
+
 import numpy as np
 
 from supply_chain_env.envs.env import SupplyChainBotTournament
@@ -91,12 +94,22 @@ def run_game(agents: list, environment: str = 'classical', verbose: bool = False
     return state
 
 
-def main():
-    last_state = run_game(create_agents())
+def parse_args():
+    parser = ArgumentParser()
+    parser.add_argument('--no_submit', action='store_true')
+    return parser.parse_args()
+
+
+def main(args):
+    last_state = run_game(create_agents(), verbose=True)
+
+    if args.no_submit:
+        sys.exit(0)
+
     # get total costs and post results to leaderboard api
     total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
     post_score_to_api(score=total_costs)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    main(parse_args())
