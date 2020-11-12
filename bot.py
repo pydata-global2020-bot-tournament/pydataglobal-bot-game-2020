@@ -43,29 +43,51 @@ from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
 
-class Retailer:
+orders_customer=[]
 
+def simple_proj(step_state,last_turn ,agent):
+    demand=[5, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+    if 0<=(step_state['turn']+(3+agent*2))<20:
+        if step_state['current_stock']>8:
+            return demand[step_state['turn']+(3+agent*2)]-1
+        else:
+            return demand[step_state['turn'] + (3 + agent * 2)]
+    else:
+        return 2
+
+class Retailer:
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        orders_customer.append(step_state['next_incoming_order'])
+        agent=0
+        last_turn=16
+        print(step_state, 'Retailer')
+        return simple_proj(step_state,last_turn,agent)
 
 
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
+        agent=1
+        last_turn=14
+        print(step_state, 'Wholes')
+        return simple_proj(step_state,last_turn,agent)
 
 class Distributor:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        agent=2
+        last_turn=12
+        print(step_state, 'Distr')
+        return simple_proj(step_state,last_turn,agent)
 
 
 class Manufacturer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
+        agent=3
+        last_turn=11
+        print(step_state, 'Manuf')
+        return simple_proj(step_state,last_turn,agent)
 
 # --------------------
 # Game setup and utils
