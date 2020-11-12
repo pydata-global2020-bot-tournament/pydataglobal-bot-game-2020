@@ -48,9 +48,9 @@ orders_customer=[]
 
 def simple_proj(step_state,last_turn):
     if ( ((step_state['current_stock'] + sum(step_state['inbound_shipments'])+sum(step_state['orders']) - 2) - 20) < 0) and step_state['turn'] < last_turn:
-        return -((step_state['current_stock'] + sum(step_state['inbound_shipments'])+sum(step_state['orders']) - 2) - 20)
+        return 7
     else:
-        return 0
+        return 7
 
 class Retailer:
     def get_action(self, step_state: dict) -> int:
@@ -117,6 +117,7 @@ def parse_args():
 
 def main(args):
     last_state = run_game(create_agents(), verbose=True)
+    print(orders_customer)
 
     if args.no_submit:
         sys.exit(0)
@@ -124,7 +125,6 @@ def main(args):
     # get total costs and post results to leaderboard api
     total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
     post_score_to_api(score=total_costs)
-
 
 if __name__ == '__main__':
     main(parse_args())
