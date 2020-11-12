@@ -36,20 +36,18 @@ solution!
 """
 import sys
 from argparse import ArgumentParser
+from statistics import mean
 
 import numpy as np
 
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
-from statistics import mean
-
 
 class Retailer:
-
-    def __init__(self, ):
+    def __init__(self,):
         self.orders = []
-        
+
     def get_action(self, step_state: dict) -> int:
 
         print(step_state)
@@ -59,19 +57,23 @@ class Retailer:
         mean_orders = mean(self.orders)
         v = max(
             int(mean_orders) * 2 - step_state["inbound_shipments"][0],
-            step_state["next_incoming_order"]
+            step_state["next_incoming_order"],
         )
 
         return v
 
+
 class Wholesaler(Retailer):
     pass
+
+
 class Distributor(Retailer):
     pass
 
 
 class Manufacturer(Retailer):
     pass
+
 
 # --------------------
 # Game setup and utils
@@ -87,7 +89,7 @@ def create_agents():
     return [Retailer(), Wholesaler(), Distributor(), Manufacturer()]
 
 
-def run_game(agents: list, environment: str = 'classical', verbose: bool = False):
+def run_game(agents: list, environment: str = "classical", verbose: bool = False):
     env = SupplyChainBotTournament(
         env_type=environment
     )  # TODO: decide if we should support all 3 environments or support one
@@ -102,7 +104,7 @@ def run_game(agents: list, environment: str = 'classical', verbose: bool = False
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument('--no_submit', action='store_true')
+    parser.add_argument("--no_submit", action="store_true")
     return parser.parse_args()
 
 
@@ -117,5 +119,5 @@ def main(args):
     post_score_to_api(score=total_costs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(parse_args())
