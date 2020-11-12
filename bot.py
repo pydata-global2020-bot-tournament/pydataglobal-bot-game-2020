@@ -46,25 +46,26 @@ from supply_chain_env.leaderboard import post_score_to_api
 class Retailer:
 
     def get_action(self, step_state: dict) -> int:
-        return 6
+        print(step_state["next_incoming_order"])
+        return 8
 
 
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
-        return 5
+        return 8
 
 
 class Distributor:
 
     def get_action(self, step_state: dict) -> int:
-        return 6
+        return 8
 
 
 class Manufacturer:
 
     def get_action(self, step_state: dict) -> int:
-        return 6
+        return 8
 
 
 # --------------------
