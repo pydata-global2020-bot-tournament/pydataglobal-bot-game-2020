@@ -42,30 +42,32 @@ import numpy as np
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
+from statistics import mean
 
 class Retailer:
 
+    def __init__(self, ):
+        self.max_stock = 0
+        self.orders = []
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        print(step_state)
+        self.orders.append(step_state["next_incoming_order"])
+
+        return max(
+            int(mean(self.orders)) * 2 - step_state["inbound_shipments"][0],
+            step_state["next_incoming_order"]
+        )
 
 
-class Wholesaler:
+class Wholesaler(Retailer):
+    pass
 
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
-
-class Distributor:
-
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+class Distributor(Retailer):
+    pass
 
 
-class Manufacturer:
-
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
+class Manufacturer(Retailer):
+    pass
 
 # --------------------
 # Game setup and utils
