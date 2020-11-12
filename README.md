@@ -14,7 +14,7 @@ source activate supply-chain-env
 
 2. Clone the environment repository
 ```
-git clone https://github.com/lr4d/pydataglobal-bot-game-2020.git
+git clone https://github.com/pydata-global2020-bot-tournament/pydataglobal-bot-game-2020.git
 ```
 
 3. Point to root repository and install the package
