@@ -48,21 +48,24 @@ from statistics import mean
 class Retailer:
 
     def __init__(self, ):
-        self.max_stock = 0
         self.orders = []
+        
     def get_action(self, step_state: dict) -> int:
-        print(step_state)
-        self.orders.append(step_state["next_incoming_order"])
 
-        return max(
-            int(mean(self.orders)) * 2 - step_state["inbound_shipments"][0],
+        print(step_state)
+        if step_state["next_incoming_order"] > 0:
+            self.orders.append(step_state["next_incoming_order"])
+
+        mean_orders = mean(self.orders)
+        v = max(
+            int(mean_orders) * 2 - step_state["inbound_shipments"][0],
             step_state["next_incoming_order"]
         )
 
+        return v
 
 class Wholesaler(Retailer):
     pass
-
 class Distributor(Retailer):
     pass
 
