@@ -46,7 +46,7 @@ from supply_chain_env.leaderboard import post_score_to_api
 class Retailer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return np.random.randint(3, 4)  # provide your implementation here
 
 
 class Wholesaler:
