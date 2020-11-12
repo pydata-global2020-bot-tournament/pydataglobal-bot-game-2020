@@ -46,6 +46,9 @@ from supply_chain_env.leaderboard import post_score_to_api
 
 orders_customer=[]
 
+
+orders_customer=[]
+
 def simple_proj(step_state,last_turn ,agent):
     demand=[5, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
     if 0<=(step_state['turn']+(3+agent*2))<20:
