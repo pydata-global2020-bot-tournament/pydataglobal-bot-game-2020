@@ -6,24 +6,26 @@ The core part of the game environment's implementation was copied from [this rep
 
 ## Installation
 
-1. Create a new conda environment to keep things clean
+1. Fork this repo
+
+2. Create a new conda environment to keep things clean
 ```
 conda create python=3.6 --name supply-chain-env
 source activate supply-chain-env
 ```
 
-2. Clone the environment repository
+3. Clone the forked repository
 ```
-git clone https://github.com/pydata-global2020-bot-tournament/pydataglobal-bot-game-2020.git
+git clone https://github.com/<your-user>/pydataglobal-bot-game-2020.git
 ```
 
-3. Point to root repository and install the package
+4. Point to root repository and install the package
 ```
 cd supply-chain-env
 pip install -e .
 ```
 
-4. Launch the `bot.py` file to run the game with randomly behaving agents
+5. Launch the `bot.py` file to run the game with randomly behaving agents
 ```
 python bot.py --no_submit
 ``` 
@@ -46,7 +48,7 @@ smaller should be the total cost reported at the end of the game.
 
 In order to participate in the tournament, you should follow these steps:
 1. Once you're happy with the developed strategy, post your changes to a new branch in this repository 
-to trigger the evaluation
+to trigger the evaluation and open a PR to merge to `master`
 2. GitHub Actions will take care of evaluating your implementation and post your results to the leaderboard
 3. Update your branch as often as you like, but be aware that the most recent results will be updated
 to the leaderboard, irrespectively of the result
