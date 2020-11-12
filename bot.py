@@ -44,6 +44,7 @@ from supply_chain_env.leaderboard import post_score_to_api
 
 from statistics import mean
 
+
 class Retailer:
 
     def __init__(self, ):
