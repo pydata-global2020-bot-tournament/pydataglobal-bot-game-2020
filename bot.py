@@ -52,7 +52,7 @@ class Retailer:
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
-        return 6
+        return 5
 
 
 class Distributor:
