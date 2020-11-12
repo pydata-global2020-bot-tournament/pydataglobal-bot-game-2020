@@ -36,36 +36,51 @@ solution!
 """
 import sys
 from argparse import ArgumentParser
+from statistics import *
+
 
 import numpy as np
 
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
+orders_customer=[]
+
+def simple_proj(step_state,last_turn):
+    if ( ((step_state['current_stock'] + sum(step_state['inbound_shipments'])+sum(step_state['orders']) - 2) - 20) < 0) and step_state['turn'] < last_turn:
+        return -((step_state['current_stock'] + sum(step_state['inbound_shipments'])+sum(step_state['orders']) - 2) - 20)
+    else:
+        return 0
 
 class Retailer:
-
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        orders_customer.append(step_state['next_incoming_order'])
+        last_turn=16
+        print(step_state, 'Retailer')
+        return simple_proj(step_state,last_turn)
 
 
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
+        last_turn=14
+        print(step_state, 'Wholes')
+        return simple_proj(step_state,last_turn)
 
 class Distributor:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        last_turn=12
+        print(step_state, 'Distr')
+        return simple_proj(step_state,last_turn)
 
 
 class Manufacturer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
+        last_turn=11
+        print(step_state, 'Manuf')
+        return simple_proj(step_state,last_turn)
 
 # --------------------
 # Game setup and utils
