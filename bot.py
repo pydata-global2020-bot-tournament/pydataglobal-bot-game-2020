@@ -59,8 +59,12 @@ class Retailer:
             int(mean_orders) * 2 - step_state["inbound_shipments"][0],
             step_state["next_incoming_order"],
         )
+        cs = step_state["current_stock"]
+        
+        if cs < mean_orders and cs < -sum(step_state["inbound_shipments"]):
+            v = sum(step_state["inbound_shipments"])
 
-        return v
+        return int(v)
 
 
 class Wholesaler(Retailer):
@@ -72,7 +76,17 @@ class Distributor(Retailer):
 
 
 class Manufacturer(Retailer):
-    pass
+    def get_action(self, step_state: dict) -> int:
+
+        print(step_state)
+        if step_state["next_incoming_order"] > 0:
+            self.orders.append(step_state["next_incoming_order"])
+        mean_orders = mean(self.orders)
+        v = mean_orders
+
+        if step_state["current_stock"] < mean_orders:
+            v = v * 2
+        return int(v)
 
 
 # --------------------
