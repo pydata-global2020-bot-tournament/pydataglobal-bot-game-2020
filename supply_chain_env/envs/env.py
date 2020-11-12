@@ -118,7 +118,7 @@ class SupplyChainBotTournament(gym.Env):
                 "turn": self.turn,
                 "cum_cost": self.cum_holding_cost[i] + self.cum_stockout_cost[i],
                 "inbound_shipments": list(self.inbound_shipments[i]),
-                "orders": list(self.orders[i])[::-1],
+                "orders": list(self.orders[i]),
                 "next_incoming_order": self.next_incoming_orders[i],
             }
         return observations
