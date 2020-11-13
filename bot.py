@@ -43,28 +43,40 @@ from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
 
+def func(step_state):
+    min_stock = 6
+    min_stock_extra = 8
+    left_stock = step_state['current_stock'] + step_state['inbound_shipments'][0] - step_state['next_incoming_order']
+
+    if left_stock > min_stock_extra:
+        return max(min_stock, min_stock-left_stock)
+    else:
+        return max(min_stock_extra, min_stock_extra-left_stock)
+
+
 class Retailer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return func(step_state)
+
 
 
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return func(step_state)
 
 
 class Distributor:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return func(step_state)
 
 
 class Manufacturer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return func(step_state)
 
 
 # --------------------
