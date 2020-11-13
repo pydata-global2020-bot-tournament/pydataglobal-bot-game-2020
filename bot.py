@@ -43,40 +43,55 @@ from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
 
-def func(step_state):
-    min_stock = 6
-    min_stock_extra = 8
+def func(step_state, previous_in_order):
     left_stock = step_state['current_stock'] + step_state['inbound_shipments'][0] - step_state['next_incoming_order']
-
-    if left_stock > min_stock_extra:
-        return max(min_stock, min_stock-left_stock)
+    c = 0.01
+    new_order = max(0., int(step_state['next_incoming_order'] + c * (step_state['next_incoming_order'] - previous_in_order)))
+    if left_stock > new_order:
+        return new_order + 1
     else:
-        return max(min_stock_extra, min_stock_extra-left_stock)
+        return int(new_order + 1.5)
 
 
 class Retailer:
+    def __init__(self):
+        self.incoming_order = 0
 
     def get_action(self, step_state: dict) -> int:
-        return func(step_state)
+        out = func(step_state, self.incoming_order)
+        self.incoming_order = step_state['next_incoming_order']
+        return out
 
 
 
 class Wholesaler:
+    def __init__(self):
+        self.incoming_order = 0
 
     def get_action(self, step_state: dict) -> int:
-        return func(step_state)
+        out = func(step_state, self.incoming_order)
+        self.incoming_order = step_state['next_incoming_order']
+        return out
 
 
 class Distributor:
+    def __init__(self):
+        self.incoming_order = 0
 
     def get_action(self, step_state: dict) -> int:
-        return func(step_state)
+        out = func(step_state, self.incoming_order)
+        self.incoming_order = step_state['next_incoming_order']
+        return out
 
 
 class Manufacturer:
+    def __init__(self):
+        self.incoming_order = 0
 
     def get_action(self, step_state: dict) -> int:
-        return func(step_state)
+        out = func(step_state, self.incoming_order)
+        self.incoming_order = step_state['next_incoming_order']
+        return out
 
 
 # --------------------
