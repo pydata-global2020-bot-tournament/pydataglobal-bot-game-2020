@@ -14,7 +14,7 @@ conda create python=3.6 --name supply-chain-env
 source activate supply-chain-env
 ```
 
-3. Clone the forked repository
+3. Clone the repository
 ```
 git clone https://github.com/pydata-global2020-bot-tournament/pydataglobal-bot-game-2020.git
 ```
