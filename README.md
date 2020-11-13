@@ -6,7 +6,7 @@ The core part of the game environment's implementation was copied from [this rep
 
 ## Installation
 
-1. Fork this repo
+1. Ask for contrubtion permissions from anyone at [this mattermost channel](https://forum.numfocus.org/pydata-global/channels/supply-chain-bot-tournament) or the BY booth (bottom right in gather).
 
 2. Create a new conda environment to keep things clean
 ```
@@ -16,10 +16,10 @@ source activate supply-chain-env
 
 3. Clone the forked repository
 ```
-git clone https://github.com/<your-user>/pydataglobal-bot-game-2020.git
+git clone https://github.com/pydata-global2020-bot-tournament/pydataglobal-bot-game-2020.git
 ```
 
-4. Point to root repository and install the package
+4. Install the package
 ```
 cd supply-chain-env
 pip install -e .
