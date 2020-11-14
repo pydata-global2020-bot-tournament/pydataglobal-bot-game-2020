@@ -42,29 +42,40 @@ import numpy as np
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
-
-class Retailer:
-
+class BaseVendor():
+    def __init__(self):
+        self.orders = []
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        if step_state["next_incoming_order"] > 0:
+            self.orders.append(step_state["next_incoming_order"])
+        
+        out = 8
+        num_order = 10
+        if len(self.orders) > num_order:
+            out = np.median(self.orders[-num_order:])
+
+        return int(max(0, out))  # provide your implementation here
+
+# [{'current_stock': -9, 'turn': 19, 'cum_cost': 273.0, 'inbound_shipments': [8, 11], 'orders': [37, 41], 'next_incoming_order': 8}, {'current_stock': -207, 'turn': 19, 'cum_cost': 1065.5, 'inbound_shipments': [12, 17], 'orders': [205, 232], 'next_incoming_order': 37}, {'current_stock': -472, 'turn': 19, 'cum_cost': 1057.5, 'inbound_shipments': [29, 42], 'orders': [181, 338], 'next_incoming_order': 205}, {'current_stock': -69, 'turn': 19, 'cum_cost': 206.5, 'inbound_shipments': [55, 63], 'orders': [82], 'next_incoming_order': 181}]
+
+class Retailer(BaseVendor):
+    def __init__(self):
+        super().__init__()
 
 
-class Wholesaler:
-
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
-
-class Distributor:
-
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+class Wholesaler(BaseVendor):
+    def __init__(self):
+        super().__init__()
 
 
-class Manufacturer:
+class Distributor(BaseVendor):
+    def __init__(self):
+        super().__init__()
 
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+
+class Manufacturer(BaseVendor):
+    def __init__(self):
+        super().__init__()
 
 
 # --------------------
@@ -110,6 +121,25 @@ def main(args):
     total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
     post_score_to_api(score=total_costs)
 
+def train_bots():
+    agents = create_agents()
+    score_history = []
+
+    for i in range(30):
+        last_state = run_game(create_agents(), verbose=False)
+        score = sum(agent_state["cum_cost"] for agent_state in last_state)
+        score_history.append(score)
+        print('episode ', i, 'score %.2f' % score, 'trailing 100 games avg %.3f' % np.mean(score_history[-100:]))
+    return score_history
 
 if __name__ == '__main__':
+    environment: str = 'classical'
+    env = SupplyChainBotTournament(
+        env_type=environment
+    )  # TODO: decide if we should support all 3 environments or support one
+    
+    scores = train_bots()
+    print(scores)
+    print(np.mean(scores))
+
     main(parse_args())
