@@ -124,35 +124,37 @@ def parse_args():
 
 
 def main(args):
-    last_state = run_game(create_agents(), verbose=True)
+    all_costs = []
+    for _ in range(30):
+        last_state = run_game(create_agents(), verbose=True)
+        all_costs.append(sum(agent_state["cum_cost"] for agent_state in last_state))
 
     if args.no_submit:
         sys.exit(0)
 
     # get total costs and post results to leaderboard api
-    total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
+    total_costs = np.median(all_costs)
     post_score_to_api(score=total_costs)
 
-def train_bots():
-    agents = create_agents()
+def train_bots(args):
     score_history = []
+
+    if args.no_submit:
+        sys.exit(0)
 
     for i in range(30):
         last_state = run_game(create_agents(), verbose=False)
         score = sum(agent_state["cum_cost"] for agent_state in last_state)
         score_history.append(score)
         print('episode ', i, 'score %.2f' % score, 'trailing 100 games avg %.3f' % np.mean(score_history[-100:]))
+
     return score_history
 
 if __name__ == '__main__':
-    environment: str = 'classical'
-    env = SupplyChainBotTournament(
-        env_type=environment
-    )  # TODO: decide if we should support all 3 environments or support one
-    
-    scores = train_bots()
-    print(scores)
-    print(np.mean(scores))
-    print(np.median(scores))
 
-    #main(parse_args())
+    #scores = train_bots(parse_args())
+    #print(scores)
+    #print(np.mean(scores))
+    #print(np.median(scores))
+
+    main(parse_args())
