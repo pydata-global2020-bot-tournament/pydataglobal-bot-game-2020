@@ -53,7 +53,7 @@ class BaseVendor():
             self.orders.append(step_state["next_incoming_order"])
         
         # Median Filter
-        num_order = 6
+        num_order = 5
         median_orders = np.median(self.orders)
         if len(self.orders) > num_order:
             median_orders = np.median(self.orders[-num_order:])
@@ -88,6 +88,9 @@ class Distributor(BaseVendor):
 class Manufacturer(BaseVendor):
     def __init__(self):
         super().__init__()
+    def get_action(self, step_state: dict) -> int:
+        # infinite supply, let's try to minimize the storage cost.
+        return step_state["next_incoming_order"]
 
 
 # --------------------
