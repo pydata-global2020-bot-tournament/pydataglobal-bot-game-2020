@@ -101,14 +101,19 @@ def parse_args():
 
 
 def main(args):
-    last_state = run_game(create_agents(), verbose=True)
+    all_costs = []
+
+    for _ in range(10):
+        last_state = run_game(create_agents(), verbose=True)
+        all_costs.append(sum(agent_state["cum_cost"] for agent_state in last_state))
 
     if args.no_submit:
         sys.exit(0)
 
     # get total costs and post results to leaderboard api
-    total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
+    total_costs = np.median(all_costs)
     post_score_to_api(score=total_costs)
+
 
 
 if __name__ == '__main__':
