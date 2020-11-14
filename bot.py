@@ -45,26 +45,53 @@ from supply_chain_env.leaderboard import post_score_to_api
 
 class Retailer:
 
+    def __init__(self):
+        self.order_history = []
+
     def get_action(self, step_state: dict) -> int:
-        return step_state['next_incoming_order'] + 2
+        self.order_history.append(step_state['next_incoming_order'])
+
+        stock = step_state['current_stock']
+        stock -= step_state['next_incoming_order']
+        stock = max(stock, 0)
+        stock -= int(3 * np.mean(self.order_history))
+        stock += sum(step_state['inbound_shipments'])
+        stock = max(-stock, 0)
+        return 6
+        return stock
 
 
 class Wholesaler:
 
+    def __init__(self):
+        self.order_history = []
+
     def get_action(self, step_state: dict) -> int:
-        return step_state['next_incoming_order'] + 2
+        self.order_history.append(step_state['next_incoming_order'])
+
+        return 6
 
 
 class Distributor:
 
+    def __init__(self):
+        self.order_history = []
+
     def get_action(self, step_state: dict) -> int:
-        return step_state['next_incoming_order'] + 2
+        self.order_history.append(step_state['next_incoming_order'])
+
+        return 6
 
 
 class Manufacturer:
 
+    def __init__(self):
+        self.order_history = []
+
     def get_action(self, step_state: dict) -> int:
-        return step_state['next_incoming_order'] + 2
+        self.order_history.append(step_state['next_incoming_order']) 
+
+        return 6
 
 
 # --------------------
