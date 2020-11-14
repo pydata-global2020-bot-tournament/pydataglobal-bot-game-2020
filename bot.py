@@ -53,7 +53,7 @@ class BaseVendor():
             self.orders.append(step_state["next_incoming_order"])
         
         # Median Filter
-        num_order = 5
+        num_order = 6
         median_orders = np.median(self.orders)
         if len(self.orders) > num_order:
             median_orders = np.median(self.orders[-num_order:])
