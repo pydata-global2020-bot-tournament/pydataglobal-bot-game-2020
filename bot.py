@@ -38,6 +38,7 @@ import sys
 from argparse import ArgumentParser
 
 import numpy as np
+from scipy import stats
 
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
@@ -45,16 +46,27 @@ from supply_chain_env.leaderboard import post_score_to_api
 class BaseVendor():
     def __init__(self):
         self.orders = []
+        self.stock = []
     def get_action(self, step_state: dict) -> int:
+        # Save Order history
         if step_state["next_incoming_order"] > 0:
             self.orders.append(step_state["next_incoming_order"])
         
-        out = 8
-        num_order = 10
+        # Median Filter
+        num_order = 3
+        median_orders = np.median(self.orders)
         if len(self.orders) > num_order:
-            out = np.median(self.orders[-num_order:])
+            median_orders = np.median(self.orders[-num_order:])
 
-        return int(max(0, out))  # provide your implementation here
+            # detect linear trend
+            slope, intercept, _, _, _ = stats.linregress(list(range(len(self.orders))), self.orders)
+
+            next_order = np.median([intercept + slope*len(self.orders), median_orders, self.orders[-1]]) + slope
+
+        else:
+            next_order = self.orders[-1] + 2
+
+        return int(max(0, next_order))  # provide your implementation here
 
 # [{'current_stock': -9, 'turn': 19, 'cum_cost': 273.0, 'inbound_shipments': [8, 11], 'orders': [37, 41], 'next_incoming_order': 8}, {'current_stock': -207, 'turn': 19, 'cum_cost': 1065.5, 'inbound_shipments': [12, 17], 'orders': [205, 232], 'next_incoming_order': 37}, {'current_stock': -472, 'turn': 19, 'cum_cost': 1057.5, 'inbound_shipments': [29, 42], 'orders': [181, 338], 'next_incoming_order': 205}, {'current_stock': -69, 'turn': 19, 'cum_cost': 206.5, 'inbound_shipments': [55, 63], 'orders': [82], 'next_incoming_order': 181}]
 
@@ -141,5 +153,6 @@ if __name__ == '__main__':
     scores = train_bots()
     print(scores)
     print(np.mean(scores))
+    print(np.median(scores))
 
-    main(parse_args())
+    #main(parse_args())
