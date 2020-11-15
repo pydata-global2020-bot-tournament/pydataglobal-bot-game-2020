@@ -42,30 +42,125 @@ import numpy as np
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
+from pathlib import Path
+from datetime import datetime
+RUNDATE = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-class Retailer:
+# Best parameters: costs ~72
+PARAMETERS = [47, 8, 16, 8, 33, 8, 12, 8]
+
+"""
+step_state
+----------
+  current_stock : int
+    amount of items in stock.
+    Each turn, the first item of inbound_shipments will be added and
+    next_incomming_order will be subtracted.
+  turn : int
+    current turn?
+  cum_cost : float
+    cost for current overstock
+  inbound_shipments : list[int]
+    amount of products in bound. The list is two long as it takes
+    two days to get the products.
+  orders : list[int]
+    current open orders. The list is two long as it takes two days
+    to make the order.
+    Each turn the right item [1] will be pushed to the right of
+    inbound items.
+  next incomming order : int
+    amount of items sold this round
+"""
+
+
+class DemandPredicter:
+
+    def __init__(self, stock_threshold=8, amount_to_buy=4):
+        self.order_history = []
+        self.simulation = RUNDATE
+        self.STOCK_THRESHOLD = stock_threshold
+        self.AMOUNT_TO_BUY = amount_to_buy
+
+    def predict_demands_same_stategy(self, n_demands=3):
+        """
+        Predict demand by copying the last demand n_demands times.
+        """
+        order_history = self.order_history[:]
+        last_demand = order_history[-1]
+        for ix in range(n_demands):
+            order_history.append(last_demand)
+        return order_history[-3:]
+
+    def get_order(self, step_state: dict, agent_name: str) -> int:
+        # collect data
+        current_stock = step_state['current_stock']
+        inbound_shipments = step_state['inbound_shipments']
+        next_incoming_order = step_state['next_incoming_order']
+        orders = step_state['orders']
+        self.order_history.append(next_incoming_order)
+
+        # demand will be average of last four turns
+        average_demand = np.mean(self.order_history[-4:])
+        demand = [next_incoming_order] + 3 * [average_demand]
+
+        # incomming shipments from previous orders
+        if len(orders) == 1:
+            # Manufacturer only have lead time of one day
+            orders = [0] + orders
+        inbound = inbound_shipments + [orders[1]] + [orders[0]]
+
+        # approximate stock
+        stock = [None, None, None, None]
+        stock[0] = current_stock + inbound[0] - demand[0]
+        stock[1] = stock[0] + inbound[1] - demand[1]
+        stock[2] = stock[1] + inbound[2] - demand[2]
+        stock[3] = stock[2] + inbound[3] - demand[3]
+
+        # order
+        if stock[3] < self.STOCK_THRESHOLD:
+            order = self.AMOUNT_TO_BUY
+        else:
+            order = 0
+
+        return order
+
+
+class Retailer(DemandPredicter):
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return self.get_order(step_state, 'Retailer')
 
 
-class Wholesaler:
-
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
-
-
-class Distributor:
+class Wholesaler(DemandPredicter):
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return self.get_order(step_state, 'Retailer')
 
 
-class Manufacturer:
+class Distributor(DemandPredicter):
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        return self.get_order(step_state, 'Retailer')
 
+
+class Manufacturer(DemandPredicter):
+
+    def get_action(self, step_state: dict) -> int:
+        return self.get_order(step_state, 'Retailer')
+
+
+def create_agents_with_settings(x : list):
+    """Creates a list of agents acting in the environment.
+
+    Note that the order of agents is important here. It is always considered by the environment that the first
+    agent is Retailer, the second one is Wholesaler, etc.
+    """
+    return [
+        Retailer(x[0], x[1]),
+        Wholesaler(x[2], x[3]),
+        Distributor(x[4], x[5]),
+        Manufacturer(x[6], x[7]),
+    ]
 
 # --------------------
 # Game setup and utils
@@ -79,6 +174,7 @@ def create_agents():
     agent is Retailer, the second one is Wholesaler, etc.
     """
     return [Retailer(), Wholesaler(), Distributor(), Manufacturer()]
+
 
 
 def run_game(agents: list, environment: str = 'classical', verbose: bool = False):
@@ -101,7 +197,10 @@ def parse_args():
 
 
 def main(args):
-    last_state = run_game(create_agents(), verbose=True)
+    last_state = run_game(
+        create_agents_with_settings(PARAMETERS),
+        verbose=True,
+    )
 
     if args.no_submit:
         sys.exit(0)
