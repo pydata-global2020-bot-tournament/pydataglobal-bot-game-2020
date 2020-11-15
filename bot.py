@@ -51,7 +51,7 @@ class DemandPredictor:
 
 class Retailer(DemandPredictor):
 
-    AMOUNT_TO_BUY = 10
+    AMOUNT_TO_BUY = 16
 
     # self is to instantiate obj within this class, -> is the type declaration for this function
     def get_action(self, step_state: dict) -> int: 
@@ -65,11 +65,11 @@ class Retailer(DemandPredictor):
 
         # demand will be average of last four turns
         average_demand = np.mean(self.order_history[-4:])
-        demand = [next_incoming_order] + 3 * [average_demand]
+        demand = next_incoming_order + 3 * average_demand
 
         # supply will be average of last four turns, matched to ordered quantities
         average_supply = np.mean(self.supply_history[-4:])
-        supply = [next_incoming_order] + 3 * [average_supply]
+        supply = next_incoming_order + 3 * average_supply
 
         if supply > demand:
             to_order = 0
@@ -81,7 +81,7 @@ class Retailer(DemandPredictor):
 
 class Wholesaler(DemandPredictor):
 
-    AMOUNT_TO_BUY = 10
+    AMOUNT_TO_BUY = 16
 
     def get_action(self, step_state: dict) -> int:
         current_stock = step_state['current_stock'] # Stock levels at end of turn
@@ -94,11 +94,11 @@ class Wholesaler(DemandPredictor):
 
         # demand will be average of last four turns
         average_demand = np.mean(self.order_history[-4:])
-        demand = [next_incoming_order] + 3 * [average_demand]
+        demand = next_incoming_order + 3 * average_demand
 
         # supply will be average of last four turns, matched to ordered quantities
         average_supply = np.mean(self.supply_history[-4:])
-        supply = [next_incoming_order] + 3 * [average_supply]
+        supply = next_incoming_order + 3 * average_supply
 
         if supply > demand:
             to_order = 0
@@ -110,7 +110,7 @@ class Wholesaler(DemandPredictor):
 
 class Distributor(DemandPredictor):
 
-    AMOUNT_TO_BUY = 10
+    AMOUNT_TO_BUY = 16
 
     def get_action(self, step_state: dict) -> int:
         current_stock = step_state['current_stock'] # Stock levels at end of turn
@@ -123,11 +123,11 @@ class Distributor(DemandPredictor):
 
         # demand will be average of last four turns
         average_demand = np.mean(self.order_history[-4:])
-        demand = [next_incoming_order] + 3 * [average_demand]
+        demand = next_incoming_order + 3 * average_demand
 
         # supply will be average of last four turns, matched to ordered quantities
         average_supply = np.mean(self.supply_history[-4:])
-        supply = [next_incoming_order] + 3 * [average_supply]
+        supply = next_incoming_order + 3 * average_supply
 
         if supply > demand:
             to_order = 0
@@ -139,24 +139,26 @@ class Distributor(DemandPredictor):
 
 class Manufacturer(DemandPredictor):
 
-    AMOUNT_TO_BUY = 10
+    AMOUNT_TO_BUY = 16
 
     def get_action(self, step_state: dict) -> int:
         current_stock = step_state['current_stock'] # Stock levels at end of turn
         inbound_shipments = step_state['inbound_shipments'] # Inbound shipments 
         orders = step_state['orders']
         next_incoming_order = step_state['next_incoming_order']
+        turn = step_state['turn']
+        # print(step_state)
 
         self.order_history.append(next_incoming_order)          #Save historical demand
         self.supply_history.append(orders)                      #Save historical supply
 
         # demand will be average of last four turns
         average_demand = np.mean(self.order_history[-4:])
-        demand = [next_incoming_order] + 3 * [average_demand]
+        demand = next_incoming_order + 3 * average_demand
 
         # supply will be average of last four turns, matched to ordered quantities
         average_supply = np.mean(self.supply_history[-4:])
-        supply = [next_incoming_order] + 3 * [average_supply]
+        supply = next_incoming_order + 3 * average_supply
 
         if supply > demand:
             to_order = 0
@@ -202,8 +204,8 @@ def parse_args():
 def main(args):
     #-- Test additions
     all_costs = []
-    for _ in range(100):
-        last_state = run_game(create_agents(), verbose=False)
+    for _ in range(500):
+        last_state = run_game(create_agents(), verbose=True)
         all_costs.append(sum(agent_state["cum_cost"] for agent_state in last_state))
 
     #-- End test
