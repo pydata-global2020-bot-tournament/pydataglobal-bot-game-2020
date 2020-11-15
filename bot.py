@@ -46,7 +46,6 @@ from supply_chain_env.leaderboard import post_score_to_api
 class Retailer:
 
     def get_action(self, step_state: dict) -> int:
-        print(step_state["next_incoming_order"])
         return 8
 
 
@@ -92,6 +91,7 @@ def run_game(agents: list, environment: str = 'classical', verbose: bool = False
             env.render()
         actions = [a.get_action(state[i]) for i, a in enumerate(agents)]
         state, rewards, done, _ = env.step(actions)
+        pass
     return state
 
 
