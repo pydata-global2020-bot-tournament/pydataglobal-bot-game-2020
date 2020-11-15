@@ -42,29 +42,128 @@ import numpy as np
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
+class DemandPredictor:
 
-class Retailer:
+    def __init__(self):
+        self.order_history = []
+        self.supply_history = []
+
+
+class Retailer(DemandPredictor):
+
+    AMOUNT_TO_BUY = 10
+
+    # self is to instantiate obj within this class, -> is the type declaration for this function
+    def get_action(self, step_state: dict) -> int: 
+        current_stock = step_state['current_stock'] # Stock levels at end of turn
+        inbound_shipments = step_state['inbound_shipments'] # Inbound shipments 
+        orders = step_state['orders']
+        next_incoming_order = step_state['next_incoming_order']
+
+        self.order_history.append(next_incoming_order)          #Save historical demand
+        self.supply_history.append(orders[1])                   #Save historical supply
+
+        # demand will be average of last four turns
+        average_demand = np.mean(self.order_history[-4:])
+        demand = [next_incoming_order] + 3 * [average_demand]
+
+        # supply will be average of last four turns, matched to ordered quantities
+        average_supply = np.mean(self.supply_history[-4:])
+        supply = [next_incoming_order] + 3 * [average_supply]
+
+        if supply > demand:
+            to_order = 0
+        else:
+            to_order = self.AMOUNT_TO_BUY
+
+        return int(to_order)
+
+
+class Wholesaler(DemandPredictor):
+
+    AMOUNT_TO_BUY = 10
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        current_stock = step_state['current_stock'] # Stock levels at end of turn
+        inbound_shipments = step_state['inbound_shipments'] # Inbound shipments 
+        orders = step_state['orders']
+        next_incoming_order = step_state['next_incoming_order']
+
+        self.order_history.append(next_incoming_order)          #Save historical demand
+        self.supply_history.append(orders[1])                   #Save historical supply
+
+        # demand will be average of last four turns
+        average_demand = np.mean(self.order_history[-4:])
+        demand = [next_incoming_order] + 3 * [average_demand]
+
+        # supply will be average of last four turns, matched to ordered quantities
+        average_supply = np.mean(self.supply_history[-4:])
+        supply = [next_incoming_order] + 3 * [average_supply]
+
+        if supply > demand:
+            to_order = 0
+        else:
+            to_order = self.AMOUNT_TO_BUY
+
+        return int(to_order)
 
 
-class Wholesaler:
+class Distributor(DemandPredictor):
+
+    AMOUNT_TO_BUY = 10
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        current_stock = step_state['current_stock'] # Stock levels at end of turn
+        inbound_shipments = step_state['inbound_shipments'] # Inbound shipments 
+        orders = step_state['orders']
+        next_incoming_order = step_state['next_incoming_order']
+
+        self.order_history.append(next_incoming_order)          #Save historical demand
+        self.supply_history.append(orders[1])                   #Save historical supply
+
+        # demand will be average of last four turns
+        average_demand = np.mean(self.order_history[-4:])
+        demand = [next_incoming_order] + 3 * [average_demand]
+
+        # supply will be average of last four turns, matched to ordered quantities
+        average_supply = np.mean(self.supply_history[-4:])
+        supply = [next_incoming_order] + 3 * [average_supply]
+
+        if supply > demand:
+            to_order = 0
+        else:
+            to_order = self.AMOUNT_TO_BUY
+        
+        return int(to_order)
 
 
-class Distributor:
+class Manufacturer(DemandPredictor):
+
+    AMOUNT_TO_BUY = 10
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        current_stock = step_state['current_stock'] # Stock levels at end of turn
+        inbound_shipments = step_state['inbound_shipments'] # Inbound shipments 
+        orders = step_state['orders']
+        next_incoming_order = step_state['next_incoming_order']
 
+        self.order_history.append(next_incoming_order)          #Save historical demand
+        self.supply_history.append(orders)                      #Save historical supply
 
-class Manufacturer:
+        # demand will be average of last four turns
+        average_demand = np.mean(self.order_history[-4:])
+        demand = [next_incoming_order] + 3 * [average_demand]
 
-    def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        # supply will be average of last four turns, matched to ordered quantities
+        average_supply = np.mean(self.supply_history[-4:])
+        supply = [next_incoming_order] + 3 * [average_supply]
+
+        if supply > demand:
+            to_order = 0
+        else:
+            to_order = self.AMOUNT_TO_BUY
+
+        return int(to_order)
 
 
 # --------------------
@@ -101,13 +200,23 @@ def parse_args():
 
 
 def main(args):
-    last_state = run_game(create_agents(), verbose=True)
+    #-- Test additions
+    all_costs = []
+    for _ in range(100):
+        last_state = run_game(create_agents(), verbose=False)
+        all_costs.append(sum(agent_state["cum_cost"] for agent_state in last_state))
+
+    #-- End test
+    total_costs = np.median(all_costs)
+    print('Median cost: ',total_costs)
+
+    #last_state = run_game(create_agents(), verbose=True)
 
     if args.no_submit:
         sys.exit(0)
 
     # get total costs and post results to leaderboard api
-    total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
+    # total_costs = sum(agent_state["cum_cost"] for agent_state in last_state)
     post_score_to_api(score=total_costs)
 
 
