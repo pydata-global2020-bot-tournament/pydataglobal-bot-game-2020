@@ -45,7 +45,7 @@ from supply_chain_env.leaderboard import post_score_to_api
 
 def run_calc(step_state) -> int:
     #expected_order = step_state["current_stock"] - step_state["next_incoming_order"]
-    expected_order = step_state["next_incoming_order"]
+    expected_order = 1.1*step_state["next_incoming_order"]
     return max(expected_order, 0)
 
 
