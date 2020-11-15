@@ -45,14 +45,14 @@ from supply_chain_env.leaderboard import post_score_to_api
 
 def run_calc(step_state) -> int:
     #expected_order = step_state["current_stock"] - step_state["next_incoming_order"]
-    expected_order = 1.1*step_state["next_incoming_order"]
+    expected_order = 1.15*step_state["next_incoming_order"]
     return max(expected_order, 0)
 
 
 class Retailer:
 
     def get_action(self, step_state: dict) -> int:
-        print(step_state)
+        print("Retailer={}".format(step_state))
         return run_calc(step_state)
         #return np.random.randint(0, 4)  # provide your implementation here
 
@@ -60,6 +60,7 @@ class Retailer:
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
+        print("Wholesaler={}".format(step_state))
         return run_calc(step_state)
         #return np.random.randint(0, 4)  # provide your implementation here
 
@@ -67,6 +68,7 @@ class Wholesaler:
 class Distributor:
 
     def get_action(self, step_state: dict) -> int:
+        print("Distributor={}".format(step_state))
         return run_calc(step_state)
         #return np.random.randint(0, 4)  # provide your implementation here
 
@@ -74,6 +76,7 @@ class Distributor:
 class Manufacturer:
 
     def get_action(self, step_state: dict) -> int:
+        print("Manufacturer={}".format(step_state))
         return run_calc(step_state)
         #return np.random.randint(0, 4)  # provide your implementation here
 
