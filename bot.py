@@ -42,22 +42,6 @@ import numpy as np
 from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
-import numpy as np
-import gym
-
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Flatten, Convolution2D, Permute
-from keras.optimizers import Adam
-import keras.backend as K
-
-from rl.agents.dqn import DQNAgent
-from rl.policy import LinearAnnealedPolicy, BoltzmannQPolicy, EpsGreedyQPolicy
-from rl.memory import SequentialMemory
-from rl.core import Processor
-from rl.callbacks import FileLogger, ModelIntervalCheckpoint
-
-
-
 
 def run_calc(step_state) -> int:
     #expected_order = step_state["current_stock"] - step_state["next_incoming_order"]
