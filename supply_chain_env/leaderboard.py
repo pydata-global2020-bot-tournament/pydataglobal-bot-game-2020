@@ -22,7 +22,7 @@ def post_score_to_api(score: float):
     # authentication
     username = os.environ["LEADERBOARD_API_USERNAME"]
     password = os.environ["LEADERBOARD_API_PASSWORD"]
-    url = "https://leaderboard-server-prod.pydata-bot-tournament.eu.live.external.byp.ai/add-user-score"
+    url = "https://example.com/add-user-score"
 
     ca_file = str(Path(__file__).parent.absolute() / "resources" / "CA.crt")
 
