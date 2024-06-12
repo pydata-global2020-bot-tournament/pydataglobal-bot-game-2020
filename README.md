@@ -8,10 +8,23 @@ The core part of the game environment's implementation was copied from [this rep
 
 1. Ask for contrubtion permissions from anyone at [this mattermost channel](https://forum.numfocus.org/pydata-global/channels/supply-chain-bot-tournament) or the BY booth (bottom right in gather).
 
-2. Create a new conda environment to keep things clean
+2. Install miniconda https://docs.conda.io/en/latest/miniconda.html if you don't have it yet
+and create a new conda environment to keep things clean
+
 ```
 conda create python=3.6 --name supply-chain-env
 source activate supply-chain-env
+```
+
+In the case of error like this 
+```
+CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/main/osx-64/current_repodata.json>
+```
+
+Try run enviroment creation with sudo/admin rights, e.g. for unix:
+
+```
+sudo create python=3.6 --name supply-chain-env
 ```
 
 3. Clone the repository
@@ -21,7 +34,7 @@ git clone https://github.com/pydata-global2020-bot-tournament/pydataglobal-bot-g
 
 4. Install the package
 ```
-cd supply-chain-env
+cd pydataglobal-bot-game-2020
 pip install -e .
 ```
 
