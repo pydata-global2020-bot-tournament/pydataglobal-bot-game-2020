@@ -43,28 +43,42 @@ from supply_chain_env.envs.env import SupplyChainBotTournament
 from supply_chain_env.leaderboard import post_score_to_api
 
 
+def run_calc(step_state) -> int:
+    #expected_order = step_state["current_stock"] - step_state["next_incoming_order"]
+    expected_order = np.ceil(1.15*step_state["next_incoming_order"])
+    return max(expected_order, 0)
+
+
 class Retailer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        print("Retailer={}".format(step_state))
+        return run_calc(step_state)
+        #return np.random.randint(0, 4)  # provide your implementation here
 
 
 class Wholesaler:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        print("Wholesaler={}".format(step_state))
+        return run_calc(step_state)
+        #return np.random.randint(0, 4)  # provide your implementation here
 
 
 class Distributor:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        print("Distributor={}".format(step_state))
+        return run_calc(step_state)
+        #return np.random.randint(0, 4)  # provide your implementation here
 
 
 class Manufacturer:
 
     def get_action(self, step_state: dict) -> int:
-        return np.random.randint(0, 4)  # provide your implementation here
+        print("Manufacturer={}".format(step_state))
+        return run_calc(step_state)
+        #return np.random.randint(0, 4)  # provide your implementation here
 
 
 # --------------------
@@ -112,4 +126,6 @@ def main(args):
 
 
 if __name__ == '__main__':
+
+    print("hi")
     main(parse_args())
